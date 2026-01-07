@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
-import { Send, MessageCircle, Mail, Phone, X, Loader2, HelpCircle } from 'lucide-react'
+import { Send, MessageCircle, Mail, Phone, X, Loader2, HelpCircle, CheckCircle } from 'lucide-react'
 import { callAIAgent } from '@/utils/aiAgent'
 
 // Agent ID from orchestrator
@@ -211,6 +211,79 @@ function ContactModal({
   )
 }
 
+// Email capture modal component
+function EmailCaptureModal({
+  open,
+  onClose,
+  onSubmit,
+}: {
+  open: boolean
+  onClose: () => void
+  onSubmit: (email: string) => void
+}) {
+  const [email, setEmail] = useState('')
+  const [submitted, setSubmitted] = useState(false)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (email.trim()) {
+      onSubmit(email)
+      setSubmitted(true)
+      setTimeout(() => {
+        setSubmitted(false)
+        setEmail('')
+        onClose()
+      }, 2000)
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Share Your Email</DialogTitle>
+          <DialogDescription>
+            Provide your email address and I'll send you helpful information.
+          </DialogDescription>
+        </DialogHeader>
+
+        {submitted ? (
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-4">
+              <CheckCircle className="text-green-600" size={24} />
+            </div>
+            <h3 className="font-semibold text-gray-900 mb-2">Email Sent!</h3>
+            <p className="text-sm text-gray-600">
+              Check your inbox for the information we've sent you.
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email Address
+              </label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                required
+                autoFocus
+              />
+            </div>
+
+            <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600">
+              <Mail size={16} className="mr-2" />
+              Send to Email
+            </Button>
+          </form>
+        )}
+      </DialogContent>
+    </Dialog>
+  )
+}
+
 // Main chat interface component
 function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([])
@@ -218,6 +291,8 @@ function ChatInterface() {
   const [isLoading, setIsLoading] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(true)
   const [contactModalOpen, setContactModalOpen] = useState(false)
+  const [emailModalOpen, setEmailModalOpen] = useState(false)
+  const [lastAgentMessage, setLastAgentMessage] = useState<string>('')
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -266,6 +341,8 @@ function ChatInterface() {
           agentResponse.result?.action_taken ||
           'I understand your message. How else can I help?'
 
+        setLastAgentMessage(responseText)
+
         const agentMessage: Message = {
           id: `msg-${Date.now() + 1}`,
           type: 'agent',
@@ -300,6 +377,12 @@ function ChatInterface() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  // Handle email submission
+  const handleEmailSubmit = async (email: string) => {
+    const emailMessage = `Please send the information we discussed to ${email}`
+    await sendMessage(emailMessage)
   }
 
   // Handle suggested question click
@@ -408,15 +491,26 @@ function ChatInterface() {
             </Button>
           </form>
 
-          {/* Escalation link */}
-          <button
-            onClick={() => setContactModalOpen(true)}
-            disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 py-2 rounded-lg transition-colors disabled:opacity-50"
-          >
-            <Phone size={16} />
-            <span>Talk to a Human</span>
-          </button>
+          {/* Action buttons */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => setEmailModalOpen(true)}
+              disabled={isLoading || messages.length === 0}
+              className="flex-1 flex items-center justify-center gap-2 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Mail size={16} />
+              <span>Email Info</span>
+            </button>
+
+            <button
+              onClick={() => setContactModalOpen(true)}
+              disabled={isLoading}
+              className="flex-1 flex items-center justify-center gap-2 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Phone size={16} />
+              <span>Talk to Human</span>
+            </button>
+          </div>
 
           {/* Character count */}
           {input.length > 400 && (
@@ -429,6 +523,13 @@ function ChatInterface() {
 
       {/* Contact modal */}
       <ContactModal open={contactModalOpen} onClose={() => setContactModalOpen(false)} />
+
+      {/* Email capture modal */}
+      <EmailCaptureModal
+        open={emailModalOpen}
+        onClose={() => setEmailModalOpen(false)}
+        onSubmit={handleEmailSubmit}
+      />
     </div>
   )
 }
