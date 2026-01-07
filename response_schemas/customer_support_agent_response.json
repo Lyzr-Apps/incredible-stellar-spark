@@ -1,0 +1,61 @@
+{
+  "agent_name": "Customer Support Agent",
+  "agent_id": "695e4bc1e02ec0b2d8e56981",
+  "agent_purpose": "assistant",
+  "description": "Responds to customer queries with KB-sourced answers, maintains context, and escalates when needed",
+  "response_schema": {
+    "status": "string",
+    "result": {
+      "answer": "string",
+      "conversationContext": "string",
+      "suggestedQuestions": [
+        "string"
+      ],
+      "escalationStatus": "string",
+      "escalationReason": "string"
+    },
+    "metadata": {
+      "agent_name": "string",
+      "timestamp": "string"
+    }
+  },
+  "example_response": {
+    "status": "success",
+    "result": {
+      "answer": "I'm here to help! Could you please provide more details about the issue you're experiencing so I can assist you effectively?",
+      "conversationContext": "User reported having issues and is seeking assistance.",
+      "suggestedQuestions": [
+        "Can you describe the specific problem you're encountering?",
+        "When did the issue start?",
+        "Are there any error messages or codes you can share?"
+      ],
+      "escalationStatus": "none",
+      "escalationReason": ""
+    },
+    "metadata": {
+      "agent_name": "Customer Support Agent",
+      "timestamp": "2024-06-10T12:36:05Z"
+    }
+  },
+  "is_actual_tested": true,
+  "actual_test_response": {
+    "status": "success",
+    "result": {
+      "answer": "I'm here to help! Could you please provide more details about the issue you're experiencing so I can assist you effectively?",
+      "conversationContext": "User reported having issues and is seeking assistance.",
+      "suggestedQuestions": [
+        "Can you describe the specific problem you're encountering?",
+        "When did the issue start?",
+        "Are there any error messages or codes you can share?"
+      ],
+      "escalationStatus": "none",
+      "escalationReason": ""
+    },
+    "metadata": {
+      "agent_name": "Customer Support Agent",
+      "timestamp": "2024-06-10T12:36:05Z"
+    }
+  },
+  "test_timestamp": "2026-01-07T12:05:41.527631",
+  "test_passed": true
+}

@@ -1,0 +1,28 @@
+{
+  "agent_name": "Customer Support Agent",
+  "agent_id": "695e4bc1e02ec0b2d8e56981",
+  "test_message": "I'm having issues, can you help?",
+  "expected_purpose": "assistant",
+  "timestamp": "2026-01-07T12:05:41.523316",
+  "is_valid_json": true,
+  "validation_errors": [],
+  "actual_response": {
+    "status": "success",
+    "result": {
+      "answer": "I'm here to help! Could you please provide more details about the issue you're experiencing so I can assist you effectively?",
+      "conversationContext": "User reported having issues and is seeking assistance.",
+      "suggestedQuestions": [
+        "Can you describe the specific problem you're encountering?",
+        "When did the issue start?",
+        "Are there any error messages or codes you can share?"
+      ],
+      "escalationStatus": "none",
+      "escalationReason": ""
+    },
+    "metadata": {
+      "agent_name": "Customer Support Agent",
+      "timestamp": "2024-06-10T12:36:05Z"
+    }
+  },
+  "raw_response": "{\n  \"status\": \"success\",\n  \"result\": {\n    \"answer\": \"I'm here to help! Could you please provide more details about the issue you're experiencing so I can assist you effectively?\",\n    \"conversationContext\": \"User reported having issues and is seeking assistance.\",\n    \"suggestedQuestions\": [\n      \"Can you describe the specific problem you're encountering?\",\n      \"When did the issue start?\",\n      \"Are there any error messages or codes you can share?\"\n    ],\n    \"escalationStatus\": \"none\",\n    \"escalationReason\": \"\"\n  },\n  \"metadata\": {\n    \"agent_name\": \"Customer Support Agent\",\n    \"timestamp\": \"2024-06-10T12:36:05Z\"\n  }\n}"
+}
